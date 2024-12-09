@@ -11,6 +11,8 @@ import Business.Organization.Organization;
 import Business.UserAccount.UserAccount;
 import Business.WorkQueue.PricingOrderRequest;
 import Business.WorkQueue.QuoteOrderRequest;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
@@ -36,38 +38,40 @@ public class MarketingWorkAreaJPanel extends javax.swing.JPanel {
         
     }
     
-    private void populateRequestTable(){
-                DefaultTableModel model = (DefaultTableModel) tblWorkArea.getModel();
-        
-        model.setRowCount(0);
+private void populateRequestTable() {
+    DefaultTableModel model = (DefaultTableModel) tblWorkArea.getModel();
+    model.setRowCount(0);
 
-        for(Network network:system.getNetworkList()){
-            for(Enterprise enterprise: network.getEnterpriseDirectory().getEnterpriseList()){
-                if (Enterprise.EnterpriseType.Dealer.equals(enterprise.getEnterpriseType())){
-                    for(Organization org: enterprise.getOrganizationDirectory().getOrganizationList()){
-                        if(org.getName().equals("Sales Organization")){
-                            for(PricingOrderRequest req : org.getPriceOrderQueue().getPriceOrderList()){
-                                
-                                    Object[] row = new Object[5];
-                                    row[0] = req;
-                                    row[1] = req.getQuoteOrderId();
-                                    row[2] = req.getCar().getModel();
-                                    row[3] = req.getMarketing()==null?"None":req.getMarketing().getUsername();
-                                    row[4] = req.getIsPriceGiven();
-                                    model.addRow(row);
-                                
-                                   
+    // Use a Set to track processed Quote IDs
+    Set<String> processedQuoteIds = new HashSet<>();
 
-                                    
+    for (Network network : system.getNetworkList()) {
+        for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
+            if (Enterprise.EnterpriseType.Dealer.equals(enterprise.getEnterpriseType())) {
+                for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
+                    if (org.getName().equals("Sales Organization")) {
+                        for (PricingOrderRequest req : org.getPriceOrderQueue().getPriceOrderList()) {
+                            // Check if this Quote ID has already been processed
+                            if (!processedQuoteIds.contains(req.getQuoteOrderId())) {
+                                // Add the Quote ID to the set
+                                processedQuoteIds.add(req.getQuoteOrderId());
+
+                                // Add the request to the table
+                                Object[] row = new Object[5];
+                                row[0] = req;
+                                row[1] = req.getQuoteOrderId();
+                                row[2] = req.getCar().getModel();
+                                row[3] = req.getMarketing() == null ? "None" : req.getMarketing().getUsername();
+                                row[4] = req.getIsPriceGiven();
+                                model.addRow(row);
                             }
                         }
                     }
-                    
                 }
             }
         }
-        
     }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
