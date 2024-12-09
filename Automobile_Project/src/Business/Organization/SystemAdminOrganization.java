@@ -5,24 +5,25 @@
 package Business.Organization;
 
 import Business.Role.Role;
-import Business.Role.TestingRole;
+import Business.Role.SystemAdminRole;
 import java.util.ArrayList;
 
 /**
  *
  * @author srinivasarithikghantasala
  */
-public class TestingOrganization extends Organization {
+public class SystemAdminOrganization extends Organization{
 
-    public TestingOrganization() {
-        super(Organization.Type.Testing.getValue());
+    public SystemAdminOrganization() {
+        super(Organization.Type.SystemAdmin.getValue());
     }
     
         @Override
     public ArrayList<Role> getSupportedRole() {
         ArrayList<Role> roles = new ArrayList();
-        roles.add(new TestingRole());
+        roles.add(new SystemAdminRole());
         return roles;
     }
+    
     
 }

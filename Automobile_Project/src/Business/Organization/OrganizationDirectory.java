@@ -69,6 +69,11 @@ public class OrganizationDirectory {
             organization = new LogisticOrganization();
             organizationList.add(organization);
         }
+        
+        if (type.getValue().equals(Type.SystemAdmin.getValue())){
+            organization = new SystemAdminOrganization();
+            organizationList.add(organization);
+        }
 
         return organization;
     }

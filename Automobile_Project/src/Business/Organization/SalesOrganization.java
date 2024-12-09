@@ -4,6 +4,11 @@
  */
 package Business.Organization;
 
+import Business.Role.MarketingRole;
+import Business.Role.Role;
+import Business.Role.SalesRole;
+import java.util.ArrayList;
+
 /**
  *
  * @author srinivasarithikghantasala
@@ -11,6 +16,15 @@ package Business.Organization;
 public class SalesOrganization extends Organization {
 
     public SalesOrganization() {
+        super(Organization.Type.Sales.getValue());
+    }
+    
+        @Override
+    public ArrayList<Role> getSupportedRole() {
+        ArrayList<Role> roles = new ArrayList();
+        roles.add(new SalesRole());
+        roles.add(new MarketingRole());
+        return roles;
     }
     
 }
