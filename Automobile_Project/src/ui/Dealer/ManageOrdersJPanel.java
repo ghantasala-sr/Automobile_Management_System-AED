@@ -11,6 +11,8 @@ import Business.Organization.Organization;
 import Business.UserAccount.UserAccount;
 import Business.WorkQueue.QuoteOrderRequest;
 import java.awt.CardLayout;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
@@ -59,17 +61,17 @@ public class ManageOrdersJPanel extends javax.swing.JPanel {
 
         tblWorkArea.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Quote ID", "Car Model", "Sales Person", "Price", "Status"
+                "Quote ID", "Car Model", "Sales Person", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -131,8 +133,8 @@ public class ManageOrdersJPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(235, 235, 235)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 699, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 699, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(142, Short.MAX_VALUE))
         );
 
@@ -231,37 +233,41 @@ public class ManageOrdersJPanel extends javax.swing.JPanel {
     
     
     
-public void populateRequestTable(){
-        DefaultTableModel model = (DefaultTableModel) tblWorkArea.getModel();
-        
-        model.setRowCount(0);
+public void populateRequestTable() {
+    DefaultTableModel model = (DefaultTableModel) tblWorkArea.getModel();
 
-        for(Network network:system.getNetworkList()){
-            for(Enterprise enterprise: network.getEnterpriseDirectory().getEnterpriseList()){
-                if (Enterprise.EnterpriseType.Dealer.equals(enterprise.getEnterpriseType())){
-                    for(Organization org: enterprise.getOrganizationDirectory().getOrganizationList()){
-                        if(org.getName().equals("Dealer Organization")){
-                            for(QuoteOrderRequest req : org.getQuoteOrderQueue().getQuoteOrderRequestList()){
-                                if(req.getDealer().getUsername().equals(account.getUsername())){
-                                    Object[] row = new Object[5];
+    model.setRowCount(0);
+
+    // Use a Set to track processed requests and avoid duplicates
+    Set<String> processedRequests = new HashSet<>();
+
+    for (Network network : system.getNetworkList()) {
+        for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
+            if (Enterprise.EnterpriseType.Dealer.equals(enterprise.getEnterpriseType())) {
+                for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
+                    if (org.getName().equals("Dealer Organization")) {
+                        for (QuoteOrderRequest req : org.getQuoteOrderQueue().getQuoteOrderRequestList()) {
+                            if (req.getDealer().getUsername().equals(account.getUsername())) {
+                                // Check if the request has already been processed
+                                if (!processedRequests.contains(req.getQuoteOrderId())) {
+                                    Object[] row = new Object[4];
                                     row[0] = req;
                                     row[1] = req.getCar().getModel();
-                                    row[2] = req.getSales()==null?"None":req.getSales().getUsername();
-                                    row[3] = req.getPrice()==0?"None":req.getPrice();
-                                    row[4] = req.getStatus();
+                                    row[2] = req.getSales() == null ? "None" : req.getSales().getUsername();
+                                    row[3] = req.getStatus();
                                     model.addRow(row);
-                                }
-                                   
 
-                                    
+                                    // Add request ID to the processed set
+                                    processedRequests.add(req.getQuoteOrderId());
+                                }
                             }
                         }
                     }
-                    
                 }
             }
         }
     }
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;

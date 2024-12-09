@@ -13,6 +13,8 @@ import Business.WorkQueue.InventoryOrderRequest;
 import Business.WorkQueue.PricingOrderRequest;
 import Business.WorkQueue.QuoteOrderRequest;
 import java.awt.CardLayout;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
@@ -415,33 +417,29 @@ public void populateRequestTable(){
         
         model.setRowCount(0);
 
-        for(Network network:system.getNetworkList()){
-            for(Enterprise enterprise: network.getEnterpriseDirectory().getEnterpriseList()){
-                    for(Organization org: enterprise.getOrganizationDirectory().getOrganizationList()){
-                        System.out.println("Sales WA :"+ org);
-                        if(org.getName().equals("Sales Organization")){
-                            for(QuoteOrderRequest req : org.getQuoteOrderQueue().getQuoteOrderRequestList()){
-                                System.out.println(req.getDealer().getUsername()+" : "+ account.getDealerName());
-                                if(req.getDealer().getUsername().equals(account.getDealerName())){
-                                    Object[] row = new Object[5];
-                                    row[0] = req;
-                                    row[1] = req.getCustomer().getUsername();
-                                    row[2] = req.getCar().getModel();
-                                    row[3] = req.getSales()==null?"None":req.getSales().getUsername();
-                                    row[4] = req.getStatus();
-                                    model.addRow(row);
-                                }
-                                   
-
-                                    
-                            }
+ Set<String> processedRequests = new HashSet<>();
+for (Network network : system.getNetworkList()) {
+    for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
+        for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
+            if (org.getName().equals("Sales Organization")) {
+                for (QuoteOrderRequest req : org.getQuoteOrderQueue().getQuoteOrderRequestList()) {
+                    if (req.getDealer().getUsername().equals(account.getDealerName())) {
+                        if (!processedRequests.contains(req.getQuoteOrderId())) {
+                            Object[] row = new Object[5];
+                            row[0] = req;
+                            row[1] = req.getCustomer().getUsername();
+                            row[2] = req.getCar().getModel();
+                            row[3] = req.getSales() == null ? "None" : req.getSales().getUsername();
+                            row[4] = req.getStatus();
+                            model.addRow(row);
+                            processedRequests.add(req.getQuoteOrderId());
+                        }
                     }
-                        
-                    }
-                    
-                
+                }
             }
         }
+    }
+}
     }
     
     
