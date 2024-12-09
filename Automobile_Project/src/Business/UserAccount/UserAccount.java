@@ -4,8 +4,12 @@
  */
 package Business.UserAccount;
 
+import Business.Car.CarDirectory;
 import Business.Employee.Employee;
+import Business.Employee.EmployeeDirectory;
 import Business.Role.Role;
+import Business.WorkQueue.InventoryOrderQueue;
+import Business.WorkQueue.QuoteOrderQueue;
 import Business.WorkQueue.WorkQueue;
 
 /**
@@ -16,12 +20,98 @@ public class UserAccount {
     private String username;
     private String password;
     private Employee employee;
+    private EmployeeDirectory employeeList;
+    private String email;
+    private String address;
+    private String distName;
+    private String dealerName;
     private Role role;
     private WorkQueue workQueue;
+    private InventoryOrderQueue inventoryOrderQueue;
+    private QuoteOrderQueue quoteOrderQueue;
+    private CarDirectory carDirectory;
 
     public UserAccount() {
         workQueue = new WorkQueue();
+        inventoryOrderQueue = new InventoryOrderQueue();
+        quoteOrderQueue = new QuoteOrderQueue();
+        carDirectory = new CarDirectory();
     }
+
+    public QuoteOrderQueue getQuoteOrderQueue() {
+        return quoteOrderQueue;
+    }
+
+    public void setQuoteOrderQueue(QuoteOrderQueue quoteOrderQueue) {
+        this.quoteOrderQueue = quoteOrderQueue;
+    }
+
+    
+    
+    public String getDealerName() {
+        return dealerName;
+    }
+
+    public void setDealerName(String dealerName) {
+        this.dealerName = dealerName;
+    }
+
+    
+    
+    
+    public String getDistName() {
+        return distName;
+    }
+
+    public void setDistName(String distName) {
+        this.distName = distName;
+    }
+    
+    
+
+    public CarDirectory getCarDirectory() {
+        return carDirectory;
+    }
+
+    public void setCarDirectory(CarDirectory carDirectory) {
+        this.carDirectory = carDirectory;
+    }
+    
+
+    public InventoryOrderQueue getInventoryOrderQueue() {
+        return inventoryOrderQueue;
+    }
+
+    public void setInventoryOrderQueue(InventoryOrderQueue inventoryOrderQueue) {
+        this.inventoryOrderQueue = inventoryOrderQueue;
+    }
+    
+    
+
+    public EmployeeDirectory getEmployeeList() {
+        return employeeList;
+    }
+
+    public void setEmployeeList(EmployeeDirectory employeeList) {
+        this.employeeList = employeeList;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    
     
     
     

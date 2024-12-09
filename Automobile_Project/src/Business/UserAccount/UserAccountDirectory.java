@@ -31,7 +31,7 @@ public class UserAccountDirectory {
         return null;
     }
     
-    public UserAccount createUserAccount(String username, String password, Employee employee, Role role){
+    public UserAccount createUserAccount(String username, String password,Employee employee ,Role role){
         UserAccount userAccount = new UserAccount();
         userAccount.setUsername(username);
         userAccount.setPassword(password);
@@ -41,12 +41,24 @@ public class UserAccountDirectory {
         return userAccount;
     }
     
+    public void removeUserAccount(UserAccount userAccount){
+        this.userAccountList.remove(userAccount);
+    }
+    
     public boolean checkIfUsernameIsUnique(String username){
         for (UserAccount ua : userAccountList){
             if (ua.getUsername().equals(username))
                 return false;
         }
         return true;
+    }
+    
+    public UserAccount findByUserName(String name){
+        for (UserAccount ua : userAccountList){
+            if (ua.getUsername().equals(name))
+                return ua;
+        }
+        return null;
     }
     
 }
