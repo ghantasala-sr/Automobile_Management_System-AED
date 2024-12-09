@@ -64,6 +64,8 @@ public class ManageDealerRolesJPanel extends javax.swing.JPanel {
         employeeJComboBox = new javax.swing.JComboBox();
         organizationJComboBox = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
+        btnDelete = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -129,6 +131,20 @@ public class ManageDealerRolesJPanel extends javax.swing.JPanel {
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/BackgroundImages/Admin5.jpg"))); // NOI18N
 
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -136,8 +152,17 @@ public class ManageDealerRolesJPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addComponent(jLabel4)
+                        .addContainerGap()
+                        .addComponent(backjButton1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(106, 106, 106)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 923, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(132, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(jLabel4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(62, 62, 62)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,13 +187,12 @@ public class ManageDealerRolesJPanel extends javax.swing.JPanel {
                                 .addComponent(jLabel5)
                                 .addGap(18, 18, 18)
                                 .addComponent(organizationJComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(backjButton1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(106, 106, 106)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 923, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(132, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnUpdate)
+                            .addComponent(btnDelete))
+                        .addGap(119, 119, 119))))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {backjButton1, createUserJButton});
@@ -182,7 +206,11 @@ public class ManageDealerRolesJPanel extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(86, 86, 86)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnUpdate)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDelete)
+                        .addGap(4, 4, 4)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(employeeJComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -279,6 +307,100 @@ JOptionPane.showMessageDialog(null, "User account created successfully!");
         }
     }//GEN-LAST:event_organizationJComboBoxActionPerformed
 
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = userJTable.getSelectedRow();
+
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this, "Please select a row to delete.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        UserAccount selectedUser = (UserAccount) userJTable.getValueAt(selectedRow, 0);
+        Organization organization = null;
+
+        // Find the organization that contains the selected user account
+        for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
+            if (org.getUserAccountDirectory().getUserAccountList().contains(selectedUser)) {
+                organization = org;
+                break;
+            }
+        }
+
+        if (organization != null) {
+            organization.getUserAccountDirectory().getUserAccountList().remove(selectedUser);
+            popData();
+            JOptionPane.showMessageDialog(this, "User account deleted successfully!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Unable to find the user account in any organization.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = userJTable.getSelectedRow();
+
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this, "Please select a row to update.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        UserAccount selectedUser = (UserAccount) userJTable.getValueAt(selectedRow, 0);
+        Organization organization = (Organization) organizationJComboBox.getSelectedItem();
+
+        if (organization == null) {
+            JOptionPane.showMessageDialog(this, "No organization selected!", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Update username
+        String newUsername = JOptionPane.showInputDialog(this, "Enter new username:", selectedUser.getUsername());
+        if (newUsername != null && !newUsername.trim().isEmpty() && !newUsername.equals(selectedUser.getUsername())) {
+            // Validate username regex: ^[a-zA-Z][a-zA-Z0-9]{2,24}$
+            if (!newUsername.matches("^[a-zA-Z][a-zA-Z0-9]{2,24}$")) {
+                JOptionPane.showMessageDialog(this, "Username must start with a letter, be 3-25 characters long, and contain only letters and digits.", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Check for unique username
+            if (!organization.getUserAccountDirectory().checkIfUsernameIsUnique(newUsername)) {
+                JOptionPane.showMessageDialog(this, "Username already exists. Please choose a different username.", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            selectedUser.setUsername(newUsername);
+        }
+
+        // Update password
+        String newPassword = JOptionPane.showInputDialog(this, "Enter new password:");
+        if (newPassword != null && !newPassword.trim().isEmpty()) {
+            // Validate password regex: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,15}$/
+            if (!newPassword.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{6,15}$")) {
+                JOptionPane.showMessageDialog(this, "Password must be 6-15 characters long, contain at least one uppercase letter, one digit, and one special character.", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            selectedUser.setPassword(newPassword);
+        }
+
+        // Update role
+        Role newRole = (Role) JOptionPane.showInputDialog(
+            this,
+            "Select new role:",
+            "Update Role",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            organization.getSupportedRole().toArray(),
+            selectedUser.getRole()
+        );
+        if (newRole != null) {
+            selectedUser.setRole(newRole);
+        }
+
+        popData();
+        JOptionPane.showMessageDialog(this, "User updated successfully!");
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
     
     public void popOrganizationComboBox() {
         organizationJComboBox.removeAllItems();
@@ -347,6 +469,8 @@ JOptionPane.showMessageDialog(null, "User account created successfully!");
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backjButton1;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JButton createUserJButton;
     private javax.swing.JComboBox distJComboBox;
     private javax.swing.JComboBox employeeJComboBox;
